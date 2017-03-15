@@ -1,0 +1,62 @@
+sizeof 几乎每次面试都会出现的一个考点，并且以不同形式展现的，这里就所知道的考点形式进行总结一下：
+sizeof属于运算符，计算的是在栈中分配的内存大小
+常见字符占用字符大小：
+char 1,
+short 2,
+int 4,
+float 4,
+string 4,
+double 8,
+long 4,
+long long 8,
+long double 8
+
+指针在内存中占用内存大小：
+所有指针所占内存大小都为4个字节。
+
+数组内存大小计算：
+数组的内存大小 ＝ 数组的长度＊ sizeof(数组的类型）；
+int a[10]； 40,
+char a[10] 10
+数组作为函数形参计算，实际传入的是指向数组头的指针，故大小按照指针计算，为4
+int test(int a[10])
+sizeof(a) = 4
+
+类（结构体）内存大小计算：
+空类所占用的内存大小为1个字节，函数不占用字节，成员变量占用相应的字节大小，虚函数所占有的内存大小为4个字节。
+struct a{
+
+};
+struct b{
+        virtual int value();
+};
+struct c{
+        virtual ~c();
+        int x;
+};
+struct d{
+        virtual ~d();
+        virtual int value();
+};
+struct e:public c{
+        virtual ~e();
+};
+struct f:public c,public d{
+        virtual ~f();
+};
+struct h{
+        int x;
+};
+struct i:virtual public h{
+  virtual ~i();
+};
+sizeof a 1,
+sizeof b 4,
+sizeof c 8,
+sizeof d 8,
+sizeof e 8,
+sizeof f 12,
+sizeof h 4,
+sizeof i 8
+
+结构体和类一致
