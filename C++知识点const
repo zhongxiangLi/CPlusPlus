@@ -1,1 +1,42 @@
-待定
+const与常量
+const 修饰常量，使得常量为只读，常量的值不可被修改，放在类型前后效果一致，如下：
+const int a = 10;
+int const a = 10;
+都是修饰a的值为10 不可变
+
+const与函数
+修饰形参，不可改变 int test(const int a);int test(const int *p)
+
+const与指针
+修饰指针本身，指针本身不可修改 char *const pConst;
+修饰指针所指向的内容不可改变  const char* pConst;
+两者都不可改变 const char* const pConst;
+int a = 10;
+const int *pa;
+int const *pa;
+二者等价,*pa = a;//错误 ＊pa为const类型的
+pa = &a; //正确，指针本身的值可以修改
+int *const p;
+*p= a;// 可行
+p = &a; // 错误指针本身不可被修改。
+
+const与重载
+int value();
+int value()const;
+
+struct A
+{
+  int value(){return 0;};
+  int value()const {return 1;};
+};
+const A* a= new A();
+a->value();//1
+A* a= new A();
+a->value(); //0
+
+const与类
+const 修饰类的成员函数，表示成员常量不能不修改，同时只能在初始化列表中赋值
+
+const 类型转化为非const类型
+使用const_cast 进行转化
+
