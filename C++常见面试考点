@@ -1,0 +1,23 @@
+全局变量，静态变量和局部变量在内存中有何区别
+
+类成员函数的重载，覆盖和隐藏区别
+
+指针和引用区别
+
+STL中vector和list特性，差别
+
+以下那种形式比较好  if(n==10) if（10=＝n）
+
+char str[]="aaa" ;char*p=str;int n =10; sizeof(str)=?,sizeof(p)=?,sizeof(n)=?
+
+进程间通信方式，各种的优缺点
+
+socket连接api函数，mysql常用api函数
+
+写一段代码 展现C++4个特性
+
+select和epoll实现方式和各自的优缺点，描述下epoll的ET模式和LT模式及其适用场景
+
+内联函数和虚函数
+
+static_cast 与dynamic_cast 之间的区别
