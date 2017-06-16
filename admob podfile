@@ -1,0 +1,8 @@
+cocoapods git clone https://coding.net/u/CocoaPods/p/Specs/git ~/.cocoapods/repos/master
+
+  602  pod repo remove master
+  603  pod repo add master https://gitcafe.com/akuandev/Specs.git
+  604  pod setup
+  605  pod install --verbose 
+  606  pod setup
+  607  pod install
