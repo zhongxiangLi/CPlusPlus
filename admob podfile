@@ -6,3 +6,16 @@ cocoapods git clone https://coding.net/u/CocoaPods/p/Specs/git ~/.cocoapods/repo
   605  pod install --verbose 
   606  pod setup
   607  pod install
+  
+  
+  
+ 现在git.oschina.net上新建一个项目
+在本地目录下，执行如下命
+git init
+git add .
+git config user.name 'xxx'
+git config user.email '1111@qq.com'
+git pull https://git.oschina.net/xxx/maple.git master
+git remote add origin https://git.oschina.net/xxx/maple.git
+git commit -am 'init'
+git push -u origin master
