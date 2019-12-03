@@ -1,0 +1,16 @@
+首先不要听别人说 friend没有用，它是有益的。
+ friend 修饰符 允许指定的类访问创建在该friend语句的类中private或者protected数据，例如下面的例子：
+  任何人都可以询问一个孩子的名字，但是孩子和孩子母亲可以修改孩子的名字
+   class Child
+  {
+
+      friend class Mother;
+
+  public:
+
+      string name( void );
+
+  protected:
+
+      void setName( string newName );
+};
