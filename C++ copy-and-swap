@@ -1,0 +1,75 @@
+cpoy-and-swap 是一种协助赋值运算实现两件事情：避免代码重复，提供强大的异常保证；
+看一个具体例子：
+class dumb_array{
+public:
+	dumb_array(std::size_t size= 0)
+		:mSize(size),
+		mArray(mSize? new int[mSize]():NULL){}
+	dumb_array(const dumb_array& other):mSize(other.mSize),mArray(mSize?new int[mSize]:NULL){
+		std::copy(other.mArray,other.mArray+mSize,mArray);
+	}
+	~dumb_array()
+	{
+		delete []mArray;
+	}
+	/*
+		copy assignment operator 
+		实现拷贝赋值操作 一下几种实现方式 注释各自优缺点
+	*/
+	// a failed solution
+	dumb_array& operator=(const dumb_array& other){
+		if(this != &other)//1
+		{
+			delete []mArray;//2
+			mArray = NULL;//2
+
+			//3
+			mSize = other.mSize;
+			mArray = mSize?new int[mSize]:NULL;
+			std::copy(other.mArray,other.mArray+mSize,mArray);
+		}
+		return *this;
+	}
+	/*
+		//1:自我分配检测：自我赋值上运行比必要的代码的简便方法，但是其他情况下只会减慢代码运行速度，并且自我赋值很少发生，大多数检测属于一种浪费
+		//2:仅能提供基本的异常保证 如果 new 分配失败，*this将会被修改
+		//3:
+	*/
+	//对上面2出现的问题的一种优化方式
+	dumb_array& operator=(const dumb_array& other){
+		if(this != &other)//1
+		{
+			std::size_t newSize = other.mSize;
+			int* newArray = newSize ? new int[newSize]() : nullptr; // (3)
+			std::copy(other.mArray, other.mArray + newSize, newArray); // (3)
+
+			// replace the old data (all are non-throwing)
+			delete [] mArray;
+			mSize = newSize;
+			mArray = newArray;
+		}
+		return *this;
+	}
+	//3 虽然解决了以上的问题，但是 遇到第三个问题 代码重复
+
+	//另一种解决方案：
+	dumb_array &operator=(dumb_array other)
+	{
+		swap(*this,other);
+
+		return *this;
+	}
+	//友元可以访问类中的私有数据，外部也可以直接访问，此处也可以不使用friend
+	//交换可以节省空间的申请
+	friend void swap(dumb_array& first,dumb_array& second);
+	//	
+private:
+	std::size_t mSize;
+	int * mArray;
+};
+inline void swap(dumb_array& first,dumb_array& second)
+{
+	using std::swap;// 
+	swap(first.mSize,second.mSize);
+	swap(first.mArray,second.mArray);
+}
