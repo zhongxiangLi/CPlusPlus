@@ -1,16 +1,70 @@
-首先不要听别人说 friend没有用，它是有益的。
- friend 修饰符 允许指定的类访问创建在该friend语句的类中private或者protected数据，例如下面的例子：
-  任何人都可以询问一个孩子的名字，但是孩子和孩子母亲可以修改孩子的名字
-   class Child
-  {
+template<class T> struct stack_helper<std::vector<T>& >
+		{
+			static void push(lua_State* L,std::vector<T>& val)
+			{
+				lua_newtable(L);
+				for(size_t i = 0; i < val.size(); ++i)
+				{
+					lua_pushinteger(L,(int)i+1);
+					stack_helper<T>::push(L,val[i]);
+					lua_settable(L,-3);
+				}
+			}
 
-      friend class Mother;
+			static std::vector<T> cast(lua_State* L,int index)
+			{
+				std::vector<T> results;
 
-  public:
+				lua_pushvalue(L,index);
 
-      string name( void );
+				int len = lua_rawlen(L,-1);
+				for(int i = 0; i < len; ++ i)
+				{
+					lua_pushinteger(L,i+1);
+					lua_gettable(L,-2);
+					results.push_back(stack_helper<T>::cast(L,-1));
+					lua_pop(L,1);
+				}
+				lua_pop(L,1);
+				return results;
+			}
 
-  protected:
+			static bool check(lua_State* L,int index)
+			{
+				return true;
+			}
+   
+   
+   template<class RT,class P1,class P2,class P3> int CallScriptWithReturn(const char* method,RT& rt,P1 v1,P2 v2,P3 v3)
+		{
+			if(m_nScriptRef == LUA_REFNIL || method == NULL || method[0] == '\0')
+				return -1;
 
-      void setName( string newName );
-};
+			lua_rawgeti(L,LUA_REGISTRYINDEX,m_nScriptRef);
+
+			lua_pushstring(L,method);
+			lua_gettable(L,-2);
+
+			int t = lua_type(L,-1);
+			if(t != LUA_TFUNCTION)
+			{
+				lua_pop(L,1);
+				lua_pop(L,1);
+				info_assertf(false && "SModuleScript::CallScript method no exists", "method," << method);
+			}
+			else
+			{
+				lua_pushvalue(L,-2);
+				titan_script::_detail::stack_helper<P1>::push(L,v1);
+				titan_script::_detail::stack_helper<P2>::push(L,v2);
+				titan_script::_detail::stack_helper<P3>::push(L,v3);
+				if(lua_pcall(L,4,1,0) != 0)
+				{
+					gErrorStream("Lua Error: CallScript[" << method << "] [" << lua_tostring(L, -1) << "].");
+					titan_assertf(false && "SModuleScript::CallScript method failed");
+				}
+			}
+			rt = titan_script::_detail::stack_helper<RT>::cast(L,-1);
+			lua_pop(L,1);
+			return 0;
+		}
